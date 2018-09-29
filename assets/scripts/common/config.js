@@ -1,24 +1,7 @@
-//记录一些配置信息
-var sysInfo = null;
-function getSysInfo()
-{
-    console.log("getSysInfo");
-    if (typeof wx != "undefined")
-    {
-        sysInfo = wx.getSystemInfoSync();    
-    }    
+var config = {
+    localversion : 1,
+    sensitive : 1529892000,
+    gameSvrUrl : "https://a.qtong0033.xyz/worldcup/WorldCup.aspx",
 }
-getSysInfo();
 
-module.exports = {
-    sysInfo : sysInfo,
-
-    sharePicture : new Array(
-        "res/raw-assets/resources/image/share/1.jpg",
-        "res/raw-assets/resources/image/share/2.jpg",
-        "res/raw-assets/resources/image/share/3.jpg",        
-    ),
-
-    shareText : new Array(
-    )
-}
+module.exports = config;

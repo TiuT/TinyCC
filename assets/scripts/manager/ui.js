@@ -1,7 +1,10 @@
 var uitype = new Array(  //新加UI需要在这个数组里面添加
-    {prefab: "start", order : 15, script:"start"},
+    {prefab: "game", order : 1, script:"game"},
+    {prefab: "start", order : 2, script:"start"},    
     {prefab: "float", order : 50, script:"float"},
     {prefab: "msgbox", order : 50, script:"msgbox"},
+    {prefab: "lamp", order : 50, script:"lamp"},
+    {prefab: "loading", order : 50, script:"loading"},
 )
 
 var panelList = new Array();
@@ -56,7 +59,8 @@ module.exports = {
         {
             for (var i = 0; i < r.childrenCount; ++i)
             {
-                r.children[i].destroy();
+				if (r.children[i].name !== "Main Camera")  //cocos creator 2.0.0有个摄像机
+	                r.children[i].destroy();
             }
         }        
         //ui管理
@@ -73,7 +77,7 @@ module.exports = {
         }
         for (var k in uitype)
         {
-            urls[k] = "prefab/" + uitype[k].prefab;
+            urls[k] = "prefab/view/" + uitype[k].prefab;
         }
         cc.loader.loadResArray(urls, cc.Prefab, function(err, assets){
             if (err) {
@@ -104,5 +108,45 @@ module.exports = {
             if (callback != undefined)
                 callback();
         });        
-    }
+    },
+
+    //ui部分
+    showFloatTip(content, during)
+    {        
+        if (during == undefined) during = 1;
+        if (content == undefined) content ="";
+        this.show("float", {
+            during : during,
+            content : content,
+        })
+    },
+
+    showMessageBox(params)
+    {
+        var p = {};
+        if (params == undefined)
+        {
+            console.error("invaild params to msgbox");            
+            return;
+        }
+        if (params.content == undefined)
+        {
+            p.content = "null";
+        }
+        this.show("msgbox", params);
+    },
+
+    showLoading(params){
+        if (CC_WECHATGAME)
+            wx.showLoading(params);
+        else
+            this.show("loading", params);
+    },
+
+    hideLoading(){
+        if (CC_WECHATGAME)
+            wx.hideLoading()
+        else
+            this.hide("loading");
+    },
 }

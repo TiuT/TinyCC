@@ -1,6 +1,7 @@
-var g = require("../common/global");
-var r = require("../manager/request");
 var c = require("../common/config");
+
+var app = require("../app");
+var util = require("../common/util");
 
 cc.Class({
     extends: cc.Component,
@@ -15,43 +16,52 @@ cc.Class({
         console.log("start onLoad");
         
         var btn = this.node.getChildByName("btn");
-        btn.getChildByName("start").on("click", this.OnStart, this);
-        btn.getChildByName("rank").on("click", this.OnRank, this);
+        btn.getChildByName("start").on("click", this.onStart, this);        
     },
 
-    register(){
-        g.on("logined", this.logined, this);
-        g.on("cancel", function(){g.showFloatTip("cancel")}, this);
+    register(){    
+        app.event.on("cancel", function(){util.showFloatTip("cancel")}, this);
     },
 
-    logined()
+    onlogined()
+    {        
+        app.ui.show("game");
+        app.ui.hide("start");        
+    },
+
+    getQuakeAnim()
     {
-        g.showFloatTip("接受到logined消息");
+        return cc.repeatForever(cc.sequence(
+            cc.rotateBy(0.1, -10),
+            cc.rotateBy(0.1, 20),
+            cc.rotateBy(0.1, -20),
+            cc.rotateBy(0.1, 20),
+            cc.rotateBy(0.1, -10),
+            cc.scaleTo(2, 1, 1)
+        ))
     },
 
     onShow(params)
     {
         console.log("start onshow");
-        console.log(params);
-        if (!this.logined)
-            this.getUserData();
-        this.showParams = params;
+        // if (!this.logined)
+        //     this.getUserData();        
+    },
+
+    onHide(params)
+    {
+        if (this.GameClubButton != undefined)
+            this.GameClubButton.hide();
     },
 
     start () {
            
     },
 
-    OnStart(){
-        g.showMessageBox({
-            content:"测试一下确认框",
-            node: this,
-            confirm : (res) => {g.emit("logined")},
-            cancel : (res) => {g.emit("cancel")},
-        })
-    },
-
-    OnRank(){
-        g.showFloatTip("这是排行榜");
+    onStart(){
+        var self = this;
+        app.login(function(){
+            self.onlogined();
+        })        
     },
 });
