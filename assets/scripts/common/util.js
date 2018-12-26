@@ -79,7 +79,7 @@ Number.prototype.toUnit = function(number){
         // console.log(this + "  " + floatVal + "  " + units[index].size);
         return floatVal + units[index].unit;
     }
-},
+}
 
 var util = {
     //数组去重
